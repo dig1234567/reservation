@@ -1,11 +1,12 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/reservation";
+
+const API_URL = `${process.env.REACT_APP_API_URL}/reservation`;
 
 // 訂位邏輯處理
 class Reservation {
   newOrder(date, time, partySize) {
     const token = localStorage.getItem("token");
-    console.log("目前的token", token);
+
     return axios.post(
       API_URL,
       {
@@ -20,31 +21,33 @@ class Reservation {
       },
     );
   }
+
   my() {
     const token = localStorage.getItem("token");
-    console.log("目前的token", token);
-    return axios.get(API_URL + "/my", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-  // 刪除訂位
-  delete(id) {
-    const token = localStorage.getItem("token");
-    console.log("目前的token", token);
-    return axios.delete(API_URL + `/reservation/${id}`, {
+
+    return axios.get(`${API_URL}/my`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   }
 
-  // 修改訂位
+  // ❗ 這裡你原本有 bug（多打一層 reservation）
+  delete(id) {
+    const token = localStorage.getItem("token");
+
+    return axios.delete(`${API_URL}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  // ❗ 同樣這裡也有 bug
   update(id, data) {
     const token = localStorage.getItem("token");
-    console.log("目前的token", token);
-    return axios.put(API_URL + `/reservation/${id}`, data, {
+
+    return axios.put(`${API_URL}/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
