@@ -12,10 +12,7 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
     e.preventDefault();
     try {
       const response = await authServices.login(email, password);
-      const user = {
-        user: response.data.user,
-        token: response.data.token,
-      };
+      const user = response.data.user;
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", response.data.token);
       setCurrentUser(user);
