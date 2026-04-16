@@ -104,12 +104,12 @@ const MemberComponent = ({ currentUser, setCurrentUser }) => {
           }}
         >
           <h2>會員資料</h2>
-          <p>
-            <strong>姓名：</strong> {currentUser.user.username}
-          </p>
-          <p>
-            <strong>Email：</strong> {currentUser.user.email}
-          </p>
+         <p>
+  <strong>姓名：</strong> {currentUser?.username}
+</p>
+<p>
+  <strong>Email：</strong> {currentUser?.email}
+</p>
         </div>
 
         {/* 訂位紀錄 */}
