@@ -10,27 +10,28 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
 
  const handleLogin = async (e) => {
   e.preventDefault();
+
   try {
     const response = await authServices.login(email, password);
 
     const user = response.data.user;
     const token = response.data.token;
 
-    // 存 localStorage
-    localStorage.setItem("user", JSON.stringify(user));
+    const loginUser = { ...user, token };
+
+    localStorage.setItem("user", JSON.stringify(loginUser));
     localStorage.setItem("token", token);
 
-    // 設定 state（建議把 token 一起放進去）
-    setCurrentUser({ ...user, token });
+    setCurrentUser(loginUser);
 
     window.alert("登入成功，您即將被導向到會員中心");
     navigate("/member");
+
   } catch (error) {
     console.log(error);
     setMessage("登入失敗, 請確認帳號或密碼..");
   }
 };
-
   return (
     <div style={styles.wrapper}>
       <div style={styles.card}>
