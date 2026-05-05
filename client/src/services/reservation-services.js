@@ -5,8 +5,8 @@ const API_URL = "https://reservation-1-tnsv.onrender.com/api/reservations";
 // 訂位邏輯處理
 class Reservation {
   newOrder(date, time, partySize) {
-    const token = localStorage.getItem("token");
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
     return axios.post(
       API_URL,
       {
@@ -23,20 +23,20 @@ class Reservation {
   }
 
   my() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token;
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
 
-  return axios.get(`${API_URL}/my`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+    return axios.get(`${API_URL}/my`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 
   // ❗ 這裡你原本有 bug（多打一層 reservation）
   delete(id) {
-    const token = localStorage.getItem("token");
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
     return axios.delete(`${API_URL}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -46,8 +46,8 @@ class Reservation {
 
   // ❗ 同樣這裡也有 bug
   update(id, data) {
-    const token = localStorage.getItem("token");
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
     return axios.put(`${API_URL}/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,3 +57,4 @@ class Reservation {
 }
 
 export default new Reservation();
+
