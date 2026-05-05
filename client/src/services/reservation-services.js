@@ -23,14 +23,15 @@ class Reservation {
   }
 
   my() {
-    const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
 
-    return axios.get(`${API_URL}/my`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
+  return axios.get(`${API_URL}/my`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 
   // ❗ 這裡你原本有 bug（多打一層 reservation）
   delete(id) {
