@@ -10,23 +10,19 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
 
  const handleLogin = async (e) => {
   e.preventDefault();
-
   try {
-    const response = await authServices.login(email, password);
+    const data = await authServices.login(email, password);
 
-    const user = response.data.user;
-    const token = response.data.token;
+    const user = data.user;
+    const token = data.token;
 
-    const loginUser = { ...user, token };
+    // 存 localStorage（其實 authService 已經存過了）
+    localStorage.setItem("user", JSON.stringify({ ...user, token }));
 
-    localStorage.setItem("user", JSON.stringify(loginUser));
-    localStorage.setItem("token", token);
-
-    setCurrentUser(loginUser);
+    setCurrentUser({ ...user, token });
 
     window.alert("登入成功，您即將被導向到會員中心");
     navigate("/member");
-
   } catch (error) {
     console.log(error);
     setMessage("登入失敗, 請確認帳號或密碼..");
