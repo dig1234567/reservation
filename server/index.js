@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.use("/api/user", auth);
-app.use("/api/reservation", reservations);
+app.use("/api/reservations", reservations);
 
 app.get("/", (req, res) => {
   res.send("歡迎來到餐廳訂位系統");
