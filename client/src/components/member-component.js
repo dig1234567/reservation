@@ -9,13 +9,14 @@ const MemberComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
 
-  useEffect(() => {
-    // 一進頁面就抓訂位紀錄
-    reservationServices
-      .my()
-      .then((res) => setRecords(res.data))
-      .catch((err) => console.log("抓訂位紀錄錯誤：", err));
-  }, []);
+useEffect(() => {
+  if (!currentUser) return;
+
+  reservationServices
+    .my()
+    .then((res) => setRecords(res.data))
+    .catch((err) => console.log("抓訂位紀錄錯誤：", err));
+}, [currentUser]);
 
   const handleLogout = () => {
     authServices.logout();
