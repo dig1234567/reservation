@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://reservation-1-tnsv.onrender.com/api/user";
+const API_URL = "https://reservation-s43l.onrender.com/api/user";
 
 class AuthService {
   register(username, email, password) {
