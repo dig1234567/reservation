@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "https://reservation-1-tnsv.onrender.com/api/reservations";
+const API_URL =
+  "https://reservation-s43l.onrender.com/api/reservations";
 
 // 訂位邏輯處理
 class Reservation {
