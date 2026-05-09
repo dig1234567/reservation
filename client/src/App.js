@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
 import HomeComponent from "./components/home-component";
@@ -11,15 +11,17 @@ import OnlineComponent from "./components/online-component";
 import MemberComponent from "./components/member-component";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
+  const [currentUser, setCurrentUser] = useState(null);
+
   useEffect(() => {
     const user = authService.getCurrentUser();
     if (user) {
       setCurrentUser(user);
     }
   }, []);
+
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/"
@@ -27,25 +29,14 @@ function App() {
             <Layout currentUser={currentUser} setCurrentUser={setCurrentUser} />
           }
         />
+
         <Route path="/register" element={<RegisterComponent />} />
+
         <Route
           path="/login"
-          element={
-            <LoginComponent
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          }
+          element={<LoginComponent setCurrentUser={setCurrentUser} />}
         />
-        <Route
-          path="/Online"
-          element={
-            <OnlineComponent
-              currentUser={currentUser}
-              setCurrentUs={setCurrentUser}
-            />
-          }
-        />
+
         <Route
           path="/member"
           element={
@@ -56,8 +47,9 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
 export default App;
+
