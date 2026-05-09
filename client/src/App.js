@@ -46,10 +46,22 @@ function App() {
             />
           }
         />
+
+        {/* 🔥 你缺的 */}
+        <Route
+          path="/online"
+          element={
+            <OnlineComponent
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
       </Routes>
     </HashRouter>
   );
 }
 
 export default App;
+
 
