@@ -6,6 +6,20 @@ import reservationServices from "../services/reservation-services";
 import "../App.css";
 
 const MemberComponent = ({ currentUser, setCurrentUser }) => {
+
+  if (!currentUser) {
+    return (
+      <div
+        style={{
+          color: "white",
+          textAlign: "center",
+          marginTop: "5rem",
+        }}
+      >
+        <h1>請重新登入</h1>
+      </div>
+    );
+  }
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
 
