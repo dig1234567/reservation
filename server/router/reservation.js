@@ -71,7 +71,7 @@ router.get("/availability", async (req, res) => {
 });
 
 // 刪除訂位（需登入）
-router.delete("/reservation/:id", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     const reservationId = req.params.id;
     const userId = req.user._id;
@@ -82,18 +82,25 @@ router.delete("/reservation/:id", auth, async (req, res) => {
     });
 
     if (!reservation) {
-      return res.status(404).json({ message: "找不到訂位或沒有權限刪除" });
+      return res.status(404).json({
+        message: "找不到訂位或沒有權限刪除",
+      });
     }
 
     await Reservation.deleteOne({ _id: reservationId });
-    res.json({ message: "訂位已成功刪除" });
+
+    res.json({
+      message: "訂位已成功刪除",
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message,
+    });
   }
 });
 
 // 修改訂位（需登入）
-router.put("/reservation/:id", auth, async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   try {
     const reservationId = req.params.id;
     const userId = req.user._id;
