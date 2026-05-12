@@ -7,6 +7,18 @@ import "../App.css";
 
 const MemberComponent = ({ currentUser, setCurrentUser }) => {
 
+  const navigate = useNavigate();
+  const [records, setRecords] = useState([]);
+
+useEffect(() => {
+  if (!currentUser) return;
+
+  reservationServices
+    .my()
+    .then((res) => setRecords(res.data))
+    .catch((err) => console.log("抓訂位紀錄錯誤：", err));
+}, [currentUser]);
+
   if (!currentUser) {
     return (
       <div
@@ -20,17 +32,6 @@ const MemberComponent = ({ currentUser, setCurrentUser }) => {
       </div>
     );
   }
-  const navigate = useNavigate();
-  const [records, setRecords] = useState([]);
-
-useEffect(() => {
-  if (!currentUser) return;
-
-  reservationServices
-    .my()
-    .then((res) => setRecords(res.data))
-    .catch((err) => console.log("抓訂位紀錄錯誤：", err));
-}, [currentUser]);
 
   const handleLogout = () => {
     authServices.logout();
