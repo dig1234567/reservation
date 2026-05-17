@@ -27,7 +27,7 @@ const Nav = ({ currentUser, setCurrentUser }) => {
   return (
     <div>
       <header className="header">
-        <h1 style={{ color: "white" }} className="h1">
+        <h1 style={{ color: "white", padding: "24px 40px" }} className="h1">
           海底撈訂位系統
         </h1>
         {!currentUser && (
@@ -57,3 +57,4 @@ const Nav = ({ currentUser, setCurrentUser }) => {
 };
 
 export default Nav;
+
