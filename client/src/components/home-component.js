@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import { toast } from "react-toastify";
 
 const HomeComponent = ({ currentUser }) => {
   const navigate = useNavigate();
 
   const handleOrder = () => {
     if (!currentUser) {
-      alert("請先登入");
-      navigate("/login");
+      toast.error("請先登入！");
       return;
     }
     navigate("/online");
@@ -48,3 +48,4 @@ const HomeComponent = ({ currentUser }) => {
 };
 
 export default HomeComponent;
+
