@@ -1,204 +1,158 @@
-import { useState, useEffect } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authServices from "../services/auth-services";
-import reservationServices from "../services/reservation-services";
-import "../App.css";
+import { toast } from "react-toastify";
 
-const MemberComponent = ({ currentUser, setCurrentUser }) => {
+const LoginComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
-  const [records, setRecords] = useState([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    if (!currentUser) return;
-
-    reservationServices
-      .my()
-      .then((res) => setRecords(res.data))
-      .catch((err) => console.log("抓訂位紀錄錯誤：", err));
-  }, [currentUser]);
-
-  if (!currentUser) {
-    return (
-      <div
-        style={{
-          color: "white",
-          textAlign: "center",
-          marginTop: "5rem",
-        }}
-      >
-        <h1>請重新登入</h1>
-      </div>
-    );
-  }
-
-  const handleLogout = () => {
-    authServices.logout();
-    localStorage.removeItem("user");
-    setCurrentUser(null);
-    alert("登出成功！");
-    navigate("/");
-  };
-
-  const handleHomepage = () => {
-    navigate("/");
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("確定要刪除這筆訂位？")) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      await reservationServices.delete(id);
-      setRecords(records.filter((r) => r._id !== id));
-      alert("刪除成功！");
-    } catch (err) {
-      console.log(err);
-      alert("刪除失敗！");
+      const data = await authServices.login(email, password);
+
+      const user = data.user;
+      const token = data.token;
+
+      // 存 localStorage（其實 authService 已經存過了）
+      localStorage.setItem("user", JSON.stringify({ ...user, token }));
+
+      setCurrentUser({ ...user, token });
+
+      toast.success("登入成功,您即將被導向到會員中心");
+      setTimeout(() => {
+        navigate("/member");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      setMessage("登入失敗, 請確認帳號或密碼..");
     }
   };
 
-  const handleEdit = (order) => {
-    const newDate = window.prompt("新的日期 (YYYY-MM-DD)", order.date);
-    const newTime = window.prompt("新的時間 (HH:mm)", order.time);
-    const newPartySize = window.prompt("新的人數", order.partySize);
-
-    reservationServices
-      .update(order._id, {
-        date: newDate,
-        time: newTime,
-        partySize: newPartySize,
-      })
-      .then((res) => {
-        setRecords((prev) =>
-          prev.map((x) => (x._id === order._id ? res.data.updated : x)),
-        );
-        alert("修改成功！");
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("修改失敗！");
-      });
-  };
-
   return (
-    <div style={{ fontFamily: "Arial, sans-serif" }}>
-      {/* Header */}
-      <header className="header">
-        <h1 style={{ color: "white" }} className="h1">
-          海底撈訂位系統
-        </h1>
-        {currentUser && (
-          <div>
-            <button onClick={handleHomepage} className="nav_btn">
-              首頁
-            </button>
-            <button onClick={handleLogout} className="nav_btn">
-              登出
-            </button>
+    <div style={styles.wrapper}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>登入會員</h2>
+        {message && <div style={styles.alert}>{message}</div>}
+        <form style={styles.form} onSubmit={handleLogin}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>電子郵件</label>
+            <input
+              type="email"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              required
+            />
           </div>
-        )}
-      </header>
-
-      {/* Main Content */}
-      <div
-        style={{
-          display: "flex",
-          gap: "2rem",
-          padding: "2rem",
-          flexWrap: "wrap",
-        }}
-      >
-        {/* 會員資料 */}
-        <div
-          style={{
-            flex: "1 1 250px",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "1rem",
-            minWidth: "250px",
-            backgroundColor: "#fafafa",
-          }}
-        >
-          <h2>會員資料</h2>
-
-          <p>
-            <strong>姓名：</strong> {currentUser?.username}
-          </p>
-
-          <p>
-            <strong>Email：</strong> {currentUser?.email}
-          </p>
-        </div>
-
-        {/* 訂位紀錄 */}
-        <div style={{ flex: "2 1 500px" }}>
-          <h2 style={{ color: "white" }}>我的訂位紀錄</h2>
-          {records.length === 0 && (
-            <p style={{ color: "#fff" }}>目前沒有任何訂位紀錄</p>
-          )}
-
-          {records.map((r) => (
-            <div
-              key={r._id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                marginBottom: "1rem",
-                padding: "1rem",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                backgroundColor: "#fff",
-              }}
-            >
-              <div>
-                <p>
-                  <strong>日期：</strong>
-                  {r.date}
-                </p>
-                <p>
-                  <strong>時間：</strong>
-                  {r.time}
-                </p>
-                <p>
-                  <strong>人數：</strong>
-                  {r.partySize}
-                </p>
-              </div>
-              <div>
-                <button
-                  onClick={() => handleEdit(r)}
-                  style={{
-                    marginRight: "0.5rem",
-                    backgroundColor: "#4CAF50",
-                    color: "#fff",
-                    border: "none",
-                    padding: "0.5rem 1rem",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  修改
-                </button>
-                <button
-                  onClick={() => handleDelete(r._id)}
-                  style={{
-                    backgroundColor: "#f44336",
-                    color: "#fff",
-                    border: "none",
-                    padding: "0.5rem 1rem",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  刪除
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>密碼</label>
+            <input
+              type="password"
+              placeholder="密碼"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+          </div>
+          <button type="submit" style={styles.button}>
+            登入
+          </button>
+        </form>
+        <p style={styles.registerText}>
+          還沒有帳號？{" "}
+          <span
+            onClick={() => navigate("/register")}
+            style={styles.registerLink}
+          >
+            立即註冊
+          </span>
+        </p>
       </div>
     </div>
   );
 };
 
-export default MemberComponent;
+const styles = {
+  wrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  },
+  card: {
+    width: "400px",
+    padding: "40px",
+    borderRadius: "12px",
+    backgroundColor: "#ffffff",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+    textAlign: "center",
+  },
+  title: {
+    marginBottom: "30px",
+    color: "#333",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  formGroup: {
+    marginBottom: "20px",
+    textAlign: "left",
+  },
+  label: {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: "600",
+    color: "#555",
+  },
+  input: {
+    width: "100%",
+    padding: "12px 15px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+    outline: "none",
+    transition: "0.3s",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    borderRadius: "8px",
+    border: "none",
+    backgroundColor: "#8a8000",
+    color: "#fff",
+    fontSize: "16px",
+    cursor: "pointer",
+    fontWeight: "600",
+    marginTop: "10px",
+    transition: "0.3s",
+  },
+  alert: {
+    backgroundColor: "#f8d7da",
+    color: "#721c24",
+    padding: "10px",
+    borderRadius: "8px",
+    marginBottom: "20px",
+    textAlign: "center",
+  },
+  registerText: {
+    marginTop: "15px",
+    fontSize: "14px",
+    color: "#666",
+  },
+  registerLink: {
+    color: "#8a8000",
+    cursor: "pointer",
+    fontWeight: "600",
+  },
+};
+
+export default LoginComponent;
