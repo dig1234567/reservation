@@ -4,6 +4,7 @@ import { useState } from "react";
 import authServices from "../services/auth-services";
 import reservationServices from "../services/reservation-services";
 import "../App.css";
+import { toast } from "react-toastify";
 
 const OnlineComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
@@ -20,22 +21,26 @@ const OnlineComponent = ({ currentUser, setCurrentUser }) => {
     authServices.logout();
     localStorage.removeItem("user");
     setCurrentUser(null);
-    window.alert("登出成功");
-    navigate("/");
+    toast.success("登出成功！");
+    setTime(() => {
+      navigate("/");
+    }, 1000);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       let res = await reservationServices.newOrder(date, time, partySize);
-      alert("訂位成功");
-      navigate("/member");
+      toast.success("訂位成功");
+      setTimeout(() => {
+        navigate("/member");
+      }, 1000);
       console.log(res.data);
     } catch (e) {
       if (e.response && e.response.data) {
         alert(e.response.data);
       } else {
-        alert("訂位失敗,請稍後再試");
+        toast.error("訂位失敗,請稍後在試");
       }
     }
   };
