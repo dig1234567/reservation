@@ -1,5 +1,7 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import HomeComponent from "./components/home-component";
 import RegisterComponent from "./components/register-component";
@@ -21,44 +23,50 @@ function App() {
   }, []);
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout currentUser={currentUser} setCurrentUser={setCurrentUser} />
-          }
-        />
+    <>
+      <HashRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
 
-        <Route path="/register" element={<RegisterComponent />} />
+          <Route path="/register" element={<RegisterComponent />} />
 
-        <Route
-          path="/login"
-          element={<LoginComponent setCurrentUser={setCurrentUser} />}
-        />
+          <Route
+            path="/login"
+            element={<LoginComponent setCurrentUser={setCurrentUser} />}
+          />
 
-        <Route
-          path="/member"
-          element={
-            <MemberComponent
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          }
-        />
+          <Route
+            path="/member"
+            element={
+              <MemberComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
 
-        {/* 🔥 你缺的 */}
-        <Route
-          path="/online"
-          element={
-            <OnlineComponent
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          }
-        />
-      </Routes>
-    </HashRouter>
+          <Route
+            path="/online"
+            element={
+              <OnlineComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+        </Routes>
+      </HashRouter>
+
+      <ToastContainer position="top-right" autoClose={2000} theme="colored" />
+    </>
   );
 }
 
