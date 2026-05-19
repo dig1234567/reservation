@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authServices from "../services/auth-services";
+import { toast } from "react-toastify";
 
 const RegisterComponent = () => {
   const navigate = useNavigate();
@@ -16,8 +17,10 @@ const RegisterComponent = () => {
     authServices
       .register(username, email, password)
       .then(() => {
-        alert("註冊成功！即將導向登入頁面");
-        navigate("/login");
+        toast.success("註冊成功,即將被導向到登入頁面");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
       })
       .catch((e) => console.log(e));
   };
@@ -139,3 +142,4 @@ const styles = {
 };
 
 export default RegisterComponent;
+
