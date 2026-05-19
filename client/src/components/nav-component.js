@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import authServices from "../services/auth-services";
 import "../App.css";
+import { toast } from "react-toastify";
 
 const Nav = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
@@ -20,8 +21,10 @@ const Nav = ({ currentUser, setCurrentUser }) => {
     authServices.logout(); // 如果你有登出邏輯，這裡可加上清除 localStorage
     localStorage.removeItem("user");
     setCurrentUser(null);
-    window.alert("登出成功！");
-    navigate("/");
+    toast.success("登出成功");
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   return (
