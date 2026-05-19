@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authServices from "../services/auth-services";
+import { toast } from "react-toastify";
 
 const LoginComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
@@ -8,26 +9,29 @@ const LoginComponent = ({ currentUser, setCurrentUser }) => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const data = await authServices.login(email, password);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await authServices.login(email, password);
 
-    const user = data.user;
-    const token = data.token;
+      const user = data.user;
+      const token = data.token;
 
-    // 存 localStorage（其實 authService 已經存過了）
-    localStorage.setItem("user", JSON.stringify({ ...user, token }));
+      // 存 localStorage（其實 authService 已經存過了）
+      localStorage.setItem("user", JSON.stringify({ ...user, token }));
 
-    setCurrentUser({ ...user, token });
+      setCurrentUser({ ...user, token });
 
-    window.alert("登入成功，您即將被導向到會員中心");
-    navigate("/member");
-  } catch (error) {
-    console.log(error);
-    setMessage("登入失敗, 請確認帳號或密碼..");
-  }
-};
+      toast.success("登入成功,您即將被導向到會員中心");
+      setTimeout(() => {
+        navigate("/member");
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      setMessage("登入失敗, 請確認帳號或密碼..");
+    }
+  };
+
   return (
     <div style={styles.wrapper}>
       <div style={styles.card}>
@@ -152,3 +156,4 @@ const styles = {
 };
 
 export default LoginComponent;
+
